@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const musicPlayer = document.getElementById('music-player');
 
     function loadYouTubePlayer() {
-        musicPlayer.src = 'https://www.youtube.com/embed/dhYOPzcsbGM?autoplay=1&mute=0&loop=1&playlist=dhYOPzcsbGM&controls=0&showinfo=0&modestbranding=1&rel=0&enablejsapi=1';
+        musicPlayer.src = 'https://youtu.be/fm-nXA-K0Dg?si=etHnp2FCxSPssqNP?autoplay=1&mute=0&loop=1&playlist=dhYOPzcsbGM&controls=0&showinfo=0&modestbranding=1&rel=0&enablejsapi=1';
         musicToggle.innerHTML = '<i class="fas fa-pause"></i>';
         musicToggle.classList.add('playing');
         musicPlaying = true;

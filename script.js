@@ -46,12 +46,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const musicToggle = document.getElementById('musicToggle');
     const musicPlayer = document.getElementById('music-player');
 
-    function loadYouTubePlayer() {
-        musicPlayer.src = 'https://youtu.be/fm-nXA-K0Dg?si=etHnp2FCxSPssqNP?autoplay=1&mute=0&loop=1&playlist=dhYOPzcsbGM&controls=0&showinfo=0&modestbranding=1&rel=0&enablejsapi=1';
-        musicToggle.innerHTML = '<i class="fas fa-pause"></i>';
-        musicToggle.classList.add('playing');
-        musicPlaying = true;
-        musicStarted = true;
+    function playAudio() {
+        musicPlayer.volume = 0.3;
+        musicPlayer.play().then(() => {
+            musicToggle.innerHTML = '<i class="fas fa-pause"></i>';
+            musicToggle.classList.add('playing');
+            musicPlaying = true;
+            musicStarted = true;
+        }).catch(err => {
+            console.log('❌ Audio play failed:', err.message);
+        });
     }
 
     function bestDelayedAutoplay() {
@@ -59,24 +63,28 @@ document.addEventListener('DOMContentLoaded', function() {
         
         delays.forEach((delay, index) => {
             setTimeout(() => {
-                try {
-                    loadYouTubePlayer();
-                    console.log(`✅ YouTube player loaded at ${delay}ms`);
-                } catch(err) {
+                musicPlayer.volume = 0.3;
+                musicPlayer.play().then(() => {
+                    console.log(`✅ Audio started at ${delay}ms`);
+                    musicToggle.innerHTML = '<i class="fas fa-pause"></i>';
+                    musicToggle.classList.add('playing');
+                    musicPlaying = true;
+                    musicStarted = true;
+                }).catch(err => {
                     console.log(`❌ Attempt ${index + 1} failed at ${delay}ms:`, err.message);
-                }
+                });
             }, delay);
         });
     }
 
     function toggleMusic() {
         if (musicPlaying) {
-            musicPlayer.src = '';
+            musicPlayer.pause();
             musicToggle.innerHTML = '<i class="fas fa-music"></i>';
             musicToggle.classList.remove('playing');
             musicPlaying = false;
         } else {
-            loadYouTubePlayer();
+            playAudio();
         }
     }
 
@@ -91,12 +99,8 @@ document.addEventListener('DOMContentLoaded', function() {
         document.addEventListener('click', function startMusic() {
             if (!musicStarted) {
                 setTimeout(() => {
-                    try {
-                        loadYouTubePlayer();
-                        console.log('✅ YouTube started via user interaction');
-                    } catch(err) {
-                        console.log('❌ Manual play failed:', err.message);
-                    }
+                    playAudio();
+                    console.log('✅ Audio started via user interaction');
                 }, 500);
             }
         }, { once: true });
@@ -104,13 +108,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // Also try on scroll
         document.addEventListener('scroll', function startMusicOnScroll() {
             if (!musicStarted && window.scrollY > 100) {
-                try {
-                    loadYouTubePlayer();
-                    console.log('✅ YouTube started via scroll');
-                    document.removeEventListener('scroll', startMusicOnScroll);
-                } catch(err) {
-                    console.log('❌ Scroll play failed:', err.message);
-                }
+                playAudio();
+                console.log('✅ Audio started via scroll');
+                document.removeEventListener('scroll', startMusicOnScroll);
             }
         });
     }

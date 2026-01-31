@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- YouTube IFrame API -->
+    <script src="https://www.youtube.com/iframe_api"></script>
 </head>
 <body>
     <header class="header">
@@ -61,7 +63,7 @@
                         <a href="https://linkedin.com/in/fachrizalrifahdi" target="_blank" class="social-link">
                             <i class="fab fa-linkedin"></i>
                         </a>
-                        <a href="mailto:fachrizal.rifahdi@example.com" class="social-link">
+                        <a href="mailto:fachrizalrifahdi@gmail.com" class="social-link">
                             <i class="fas fa-envelope"></i>
                         </a>
                     </div>
@@ -221,7 +223,7 @@
                         <div class="contact-details">
                             <div class="contact-item">
                                 <i class="fas fa-envelope"></i>
-                                <span>fachrizal.rifahdi@example.com</span>
+                                <span>fachrizalrifahdi@gmail.com</span>
                             </div>
                             <div class="contact-item">
                                 <i class="fas fa-phone"></i>
@@ -264,11 +266,8 @@
         </div>
     </footer>
 
-    <!-- Background Music -->
-    <audio id="bgMusic" loop>
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
-        <!-- Alan Walker - On My Way placeholder (replace with actual URL) -->
-    </audio>
+    <!-- Hidden YouTube Player for Alan Walker - On My Way -->
+    <div id="youtube-player" style="display: none;"></div>
     
     <!-- Music Controls -->
     <div class="music-controls">

@@ -40,39 +40,72 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Background Music Control
-    const bgMusic = document.getElementById('bgMusic');
-    const musicToggle = document.getElementById('musicToggle');
+    // YouTube Player Control for Alan Walker - On My Way
+    let player;
     let musicPlaying = false;
+    const musicToggle = document.getElementById('musicToggle');
 
-    if (bgMusic && musicToggle) {
-        // Set music volume
-        bgMusic.volume = 0.3;
+    // YouTube API callback
+    function onYouTubeIframeAPIReady() {
+        player = new YT.Player('youtube-player', {
+            height: '0',
+            width: '0',
+            videoId: 'dhYOPzcsbGM', // Alan Walker - On My Way
+            playerVars: {
+                'autoplay': 0,
+                'controls': 0,
+                'loop': 1,
+                'playlist': 'dhYOPzcsbGM', // Required for looping
+                'mute': 0,
+                'rel': 0,
+                'showinfo': 0,
+                'modestbranding': 1,
+                'iv_load_policy': 3
+            },
+            events: {
+                'onReady': onPlayerReady,
+                'onStateChange': onPlayerStateChange
+            }
+        });
+    }
+
+    function onPlayerReady(event) {
+        player.setVolume(20); // Set volume to 20%
         
-        musicToggle.addEventListener('click', function() {
-            if (musicPlaying) {
-                bgMusic.pause();
-                musicToggle.innerHTML = '<i class="fas fa-music"></i>';
-                musicToggle.classList.remove('playing');
-                musicPlaying = false;
-            } else {
-                bgMusic.play().catch(e => {
-                    console.log('Music autoplay blocked:', e);
-                });
+        // Auto-play after first user interaction
+        document.addEventListener('click', function startMusic() {
+            if (player && !musicPlaying) {
+                player.playVideo();
                 musicToggle.innerHTML = '<i class="fas fa-pause"></i>';
                 musicToggle.classList.add('playing');
                 musicPlaying = true;
             }
-        });
-
-        // Auto-play music when user interacts with page
-        document.addEventListener('click', function() {
-            if (!musicPlaying && bgMusic.paused) {
-                bgMusic.play().catch(e => {
-                    console.log('Music autoplay blocked:', e);
-                });
-            }
+            document.removeEventListener('click', startMusic);
         }, { once: true });
+    }
+
+    function onPlayerStateChange(event) {
+        if (event.data === YT.PlayerState.ENDED) {
+            player.playVideo(); // Loop the video
+        }
+    }
+
+    if (musicToggle) {
+        musicToggle.addEventListener('click', function() {
+            if (player) {
+                if (musicPlaying) {
+                    player.pauseVideo();
+                    musicToggle.innerHTML = '<i class="fas fa-music"></i>';
+                    musicToggle.classList.remove('playing');
+                    musicPlaying = false;
+                } else {
+                    player.playVideo();
+                    musicToggle.innerHTML = '<i class="fas fa-pause"></i>';
+                    musicToggle.classList.add('playing');
+                    musicPlaying = true;
+                }
+            }
+        });
     }
 
     // Form submission handling

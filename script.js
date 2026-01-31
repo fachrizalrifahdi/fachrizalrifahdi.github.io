@@ -286,57 +286,43 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Enhanced typing effect with multiple colors - preserve highlight
+    // Typing animation for name reveal
     const heroTitle = document.querySelector('.hero-title');
     if (heroTitle) {
-        const originalHTML = heroTitle.innerHTML;
         const highlightSpan = heroTitle.querySelector('.highlight');
         const nameText = 'Fachrizal Rifahdi';
         
-        // Store original styles
+        // Store original highlight styles
         const originalHighlightStyle = window.getComputedStyle(highlightSpan);
         const originalBackground = originalHighlightStyle.background;
         const originalWebkitBackground = originalHighlightStyle.webkitBackground;
+        const originalColor = originalHighlightStyle.color;
+        
+        // Initially hide the name
+        highlightSpan.style.opacity = '0';
         
         let index = 0;
         const typingSpeed = 100;
-        const colors = ['#00d4ff', '#ff00ff', '#00ff88', '#00d4ff'];
         
-        function typeHighlight() {
+        function typeWriter() {
             if (index < nameText.length) {
-                const currentText = nameText.substring(0, index + 1);
-                const remainingText = nameText.substring(index + 1);
+                // Reveal one character at a time
+                const visibleText = nameText.substring(0, index + 1);
+                highlightSpan.textContent = visibleText;
                 
-                // Create colored spans for typed characters
-                let coloredHTML = '';
-                for (let i = 0; i <= index; i++) {
-                    const span = document.createElement('span');
-                    span.textContent = nameText[i];
-                    span.style.color = colors[i % colors.length];
-                    span.style.animation = 'glow 2s ease-in-out infinite';
-                    coloredHTML += span.outerHTML;
-                }
-                coloredHTML += remainingText;
-                
-                highlightSpan.innerHTML = coloredHTML;
-                // Apply the original highlight background
+                // Apply highlight styles and make visible
                 highlightSpan.style.background = originalBackground;
                 highlightSpan.style.webkitBackground = originalWebkitBackground;
+                highlightSpan.style.color = originalColor;
+                highlightSpan.style.opacity = '1';
                 
                 index++;
-                setTimeout(typeHighlight, typingSpeed);
-            } else {
-                // Keep the fully colored version for 2 seconds, then restore
-                setTimeout(() => {
-                    highlightSpan.innerHTML = nameText;
-                    highlightSpan.style.background = originalBackground;
-                    highlightSpan.style.webkitBackground = originalWebkitBackground;
-                }, 2000);
+                setTimeout(typeWriter, typingSpeed);
             }
         }
         
         // Start typing effect after page load
-        setTimeout(typeHighlight, 500);
+        setTimeout(typeWriter, 500);
     }
 
     // Enhanced parallax effect with multiple layers

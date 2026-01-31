@@ -5,14 +5,14 @@
 ### Required Files:
 1. **Download Alan Walker - On My Way MP3**
    - Visit: https://ytmp3.cc
-   - Paste: https://youtube.com/watch?v=dhYOPzcsbGM
+   - Paste: https://youtube.com/watch?v=fm-nXA-K0Dg
    - Select: 320kbps quality
-   - Download as: `alan-walker-on-my-way.mp3`
+   - Download as: `audio.mp3`
 
 2. **Add to Repository**
    ```bash
-   mv alan-walker-on-my-way.mp3 audio/
-   git add audio/alan-walker-on-my-way.mp3
+   mv audio.mp3 audio/
+   git add audio/audio.mp3
    ```
 
 3. **Features Implemented:**

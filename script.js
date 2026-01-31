@@ -46,52 +46,37 @@ document.addEventListener('DOMContentLoaded', function() {
     const musicToggle = document.getElementById('musicToggle');
     const musicPlayer = document.getElementById('music-player');
 
+    function loadYouTubePlayer() {
+        musicPlayer.src = 'https://www.youtube.com/embed/dhYOPzcsbGM?autoplay=1&mute=0&loop=1&playlist=dhYOPzcsbGM&controls=0&showinfo=0&modestbranding=1&rel=0&enablejsapi=1';
+        musicToggle.innerHTML = '<i class="fas fa-pause"></i>';
+        musicToggle.classList.add('playing');
+        musicPlaying = true;
+        musicStarted = true;
+    }
+
     function bestDelayedAutoplay() {
-        const delays = [500, 1000, 2000, 3000, 5000]; // Multiple attempts
+        const delays = [500, 1000, 2000, 3000]; // Multiple attempts
         
         delays.forEach((delay, index) => {
             setTimeout(() => {
-                musicPlayer.volume = 0.3;
-                musicPlayer.muted = false;
-                musicPlayer.play().then(() => {
-                    console.log(`✅ Music started at ${delay}ms`);
-                    musicToggle.innerHTML = '<i class="fas fa-pause"></i>';
-                    musicToggle.classList.add('playing');
-                    musicPlaying = true;
-                    musicStarted = true;
-                }).catch(err => {
+                try {
+                    loadYouTubePlayer();
+                    console.log(`✅ YouTube player loaded at ${delay}ms`);
+                } catch(err) {
                     console.log(`❌ Attempt ${index + 1} failed at ${delay}ms:`, err.message);
-                    
-                    // Try muted autoplay first, then unmute
-                    if (index === delays.length - 1) {
-                        musicPlayer.muted = true;
-                        musicPlayer.play().then(() => {
-                            setTimeout(() => {
-                                musicPlayer.muted = false;
-                            }, 1000);
-                        }).catch(err => {
-                            console.log('❌ Even muted autoplay failed');
-                        });
-                    }
-                });
+                }
             }, delay);
         });
     }
 
     function toggleMusic() {
         if (musicPlaying) {
-            musicPlayer.pause();
+            musicPlayer.src = '';
             musicToggle.innerHTML = '<i class="fas fa-music"></i>';
             musicToggle.classList.remove('playing');
             musicPlaying = false;
         } else {
-            musicPlayer.volume = 0.3;
-            musicPlayer.play().then(() => {
-                musicToggle.innerHTML = '<i class="fas fa-pause"></i>';
-                musicToggle.classList.add('playing');
-                musicPlaying = true;
-                musicStarted = true;
-            });
+            loadYouTubePlayer();
         }
     }
 
@@ -106,16 +91,12 @@ document.addEventListener('DOMContentLoaded', function() {
         document.addEventListener('click', function startMusic() {
             if (!musicStarted) {
                 setTimeout(() => {
-                    musicPlayer.volume = 0.3;
-                    musicPlayer.play().then(() => {
-                        console.log('✅ Music started via user interaction');
-                        musicToggle.innerHTML = '<i class="fas fa-pause"></i>';
-                        musicToggle.classList.add('playing');
-                        musicPlaying = true;
-                        musicStarted = true;
-                    }).catch(err => {
+                    try {
+                        loadYouTubePlayer();
+                        console.log('✅ YouTube started via user interaction');
+                    } catch(err) {
                         console.log('❌ Manual play failed:', err.message);
-                    });
+                    }
                 }, 500);
             }
         }, { once: true });
@@ -123,17 +104,13 @@ document.addEventListener('DOMContentLoaded', function() {
         // Also try on scroll
         document.addEventListener('scroll', function startMusicOnScroll() {
             if (!musicStarted && window.scrollY > 100) {
-                musicPlayer.volume = 0.3;
-                musicPlayer.play().then(() => {
-                    console.log('✅ Music started via scroll');
-                    musicToggle.innerHTML = '<i class="fas fa-pause"></i>';
-                    musicToggle.classList.add('playing');
-                    musicPlaying = true;
-                    musicStarted = true;
-                }).catch(err => {
+                try {
+                    loadYouTubePlayer();
+                    console.log('✅ YouTube started via scroll');
+                    document.removeEventListener('scroll', startMusicOnScroll);
+                } catch(err) {
                     console.log('❌ Scroll play failed:', err.message);
-                });
-                document.removeEventListener('scroll', startMusicOnScroll);
+                }
             }
         });
     }

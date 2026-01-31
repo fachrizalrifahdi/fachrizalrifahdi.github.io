@@ -254,6 +254,7 @@
     <footer class="footer">
         <div class="container">
             <p>&copy; 2026 Fachrizal Rifahdi. All rights reserved.</p>
+            <p class="music-attribution">Background Music: "On My Way" by Alan Walker</p>
             <div class="footer-socials">
                 <a href="https://github.com/fachrizalrifahdi" target="_blank" class="social-link">
                     <i class="fab fa-github"></i>
@@ -267,13 +268,11 @@
 
 
     
-    <!-- Hidden YouTube Music Player -->
-    <iframe id="music-player" 
-            style="position: absolute; top: -9999px; left: -9999px; width: 1px; height: 1px;" 
-            src="https://youtu.be/dhYOPzcsbGM?si=tuxM4NHg7u2R6B-_?autoplay=1&mute=1&loop=1&playlist=dhYOPzcsbGM&controls=0&showinfo=0&modestbranding=1&rel=0"
-            frameborder="0" 
-            allow="autoplay">
-    </iframe>
+    <!-- Hidden Alan Walker - On My Way Music Player (Best Delayed Autoplay) -->
+    <audio id="music-player" loop>
+        <source src="alan-walker-on-my-way.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
 
     <!-- Music Controls -->
     <div class="music-controls">

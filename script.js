@@ -40,27 +40,59 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // YouTube Music Control for Alan Walker - On My Way
+    // BEST DELAYED AUTOPLAY - Alan Walker - On My Way
     let musicPlaying = false;
-    let musicStarted = false;
     const musicToggle = document.getElementById('musicToggle');
     const musicPlayer = document.getElementById('music-player');
 
+    function bestDelayedAutoplay() {
+        const delays = [2000, 4000, 6000]; // 2s, 4s, 6s attempts
+        
+        delays.forEach((delay, index) => {
+            setTimeout(() => {
+                musicPlayer.volume = 0.3;
+                musicPlayer.play().then(() => {
+                    console.log(`✅ Alan Walker - On My Way started at ${delay}ms`);
+                    musicToggle.innerHTML = '<i class="fas fa-pause"></i>';
+                    musicToggle.classList.add('playing');
+                    musicPlaying = true;
+                }).catch(err => {
+                    console.log(`❌ Attempt ${index + 1} failed at ${delay}ms`);
+                });
+            }, delay);
+        });
+    }
+
     function toggleMusic() {
         if (musicPlaying) {
-            // Mute the music
-            musicPlayer.src = 'https://www.youtube.com/embed/dhYOPzcsbGM?autoplay=0&mute=1&loop=1&playlist=dhYOPzcsbGM&controls=0&showinfo=0&modestbranding=1&rel=0';
+            musicPlayer.pause();
             musicToggle.innerHTML = '<i class="fas fa-music"></i>';
             musicToggle.classList.remove('playing');
             musicPlaying = false;
         } else {
-            // Unmute and play the music
-            musicPlayer.src = 'https://www.youtube.com/embed/dhYOPzcsbGM?autoplay=1&mute=0&loop=1&playlist=dhYOPzcsbGM&controls=0&showinfo=0&modestbranding=1&rel=0';
-            musicToggle.innerHTML = '<i class="fas fa-pause"></i>';
-            musicToggle.classList.add('playing');
-            musicPlaying = true;
-            musicStarted = true;
+            musicPlayer.volume = 0.3;
+            musicPlayer.play().then(() => {
+                musicToggle.innerHTML = '<i class="fas fa-pause"></i>';
+                musicToggle.classList.add('playing');
+                musicPlaying = true;
+            });
         }
+    }
+
+    // Initialize best delayed autoplay on page load
+    if (musicToggle && musicPlayer) {
+        musicToggle.addEventListener('click', toggleMusic);
+        
+        // Start delayed autoplay immediately
+        bestDelayedAutoplay();
+        
+        // Keyboard shortcut 'M' for music control
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'm' || e.key === 'M') {
+                toggleMusic();
+            }
+        });
+    }
     }
 
     if (musicToggle && musicPlayer) {

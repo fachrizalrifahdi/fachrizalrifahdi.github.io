@@ -763,6 +763,13 @@ body::before {
     font-size: 1.1rem;
 }
 
+.music-attribution {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    opacity: 0.8;
+    font-style: italic;
+}
+
 .footer-socials {
     display: flex;
     gap: 1rem;

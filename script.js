@@ -47,11 +47,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const musicPlayer = document.getElementById('music-player');
 
     function bestDelayedAutoplay() {
-        const delays = [1000, 3000, 5000]; // 1s, 3s, 5s attempts
+        const delays = [500, 1000, 2000, 3000, 5000]; // Multiple attempts
         
         delays.forEach((delay, index) => {
             setTimeout(() => {
                 musicPlayer.volume = 0.3;
+                musicPlayer.muted = false;
                 musicPlayer.play().then(() => {
                     console.log(`✅ Music started at ${delay}ms`);
                     musicToggle.innerHTML = '<i class="fas fa-pause"></i>';
@@ -59,7 +60,19 @@ document.addEventListener('DOMContentLoaded', function() {
                     musicPlaying = true;
                     musicStarted = true;
                 }).catch(err => {
-                    console.log(`❌ Attempt ${index + 1} failed at ${delay}ms`);
+                    console.log(`❌ Attempt ${index + 1} failed at ${delay}ms:`, err.message);
+                    
+                    // Try muted autoplay first, then unmute
+                    if (index === delays.length - 1) {
+                        musicPlayer.muted = true;
+                        musicPlayer.play().then(() => {
+                            setTimeout(() => {
+                                musicPlayer.muted = false;
+                            }, 1000);
+                        }).catch(err => {
+                            console.log('❌ Even muted autoplay failed');
+                        });
+                    }
                 });
             }, delay);
         });
@@ -95,14 +108,34 @@ document.addEventListener('DOMContentLoaded', function() {
                 setTimeout(() => {
                     musicPlayer.volume = 0.3;
                     musicPlayer.play().then(() => {
+                        console.log('✅ Music started via user interaction');
                         musicToggle.innerHTML = '<i class="fas fa-pause"></i>';
                         musicToggle.classList.add('playing');
                         musicPlaying = true;
                         musicStarted = true;
+                    }).catch(err => {
+                        console.log('❌ Manual play failed:', err.message);
                     });
                 }, 500);
             }
         }, { once: true });
+        
+        // Also try on scroll
+        document.addEventListener('scroll', function startMusicOnScroll() {
+            if (!musicStarted && window.scrollY > 100) {
+                musicPlayer.volume = 0.3;
+                musicPlayer.play().then(() => {
+                    console.log('✅ Music started via scroll');
+                    musicToggle.innerHTML = '<i class="fas fa-pause"></i>';
+                    musicToggle.classList.add('playing');
+                    musicPlaying = true;
+                    musicStarted = true;
+                }).catch(err => {
+                    console.log('❌ Scroll play failed:', err.message);
+                });
+                document.removeEventListener('scroll', startMusicOnScroll);
+            }
+        });
     }
 
     // Form submission handling

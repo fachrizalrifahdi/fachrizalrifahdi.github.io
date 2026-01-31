@@ -289,42 +289,48 @@ document.addEventListener('DOMContentLoaded', function() {
     // Enhanced typing effect with multiple colors - preserve highlight
     const heroTitle = document.querySelector('.hero-title');
     if (heroTitle) {
+        const originalHTML = heroTitle.innerHTML;
         const highlightSpan = heroTitle.querySelector('.highlight');
-        const textBefore = "Hi, I'm ";
-        const textAfter = "";
+        const nameText = 'Fachrizal Rifahdi';
         
-        heroTitle.innerHTML = '';
-        heroTitle.appendChild(document.createTextNode(textBefore));
-        
-        const newHighlightSpan = document.createElement('span');
-        newHighlightSpan.className = 'highlight';
-        newHighlightSpan.textContent = 'Fachrizal Rifahdi';
-        heroTitle.appendChild(newHighlightSpan);
+        // Store original styles
+        const originalHighlightStyle = window.getComputedStyle(highlightSpan);
+        const originalBackground = originalHighlightStyle.background;
+        const originalWebkitBackground = originalHighlightStyle.webkitBackground;
         
         let index = 0;
         const typingSpeed = 100;
         const colors = ['#00d4ff', '#ff00ff', '#00ff88', '#00d4ff'];
         
         function typeHighlight() {
-            if (index < 'Fachrizal Rifahdi'.length) {
-                const char = 'Fachrizal Rifahdi'[index];
-                const span = document.createElement('span');
-                span.textContent = char;
-                span.style.color = colors[index % colors.length];
-                span.style.animation = 'glow 2s ease-in-out infinite';
-                span.style.fontWeight = 'inherit';
+            if (index < nameText.length) {
+                const currentText = nameText.substring(0, index + 1);
+                const remainingText = nameText.substring(index + 1);
                 
-                if (index === 0) {
-                    newHighlightSpan.innerHTML = '';
+                // Create colored spans for typed characters
+                let coloredHTML = '';
+                for (let i = 0; i <= index; i++) {
+                    const span = document.createElement('span');
+                    span.textContent = nameText[i];
+                    span.style.color = colors[i % colors.length];
+                    span.style.animation = 'glow 2s ease-in-out infinite';
+                    coloredHTML += span.outerHTML;
                 }
-                newHighlightSpan.appendChild(span);
+                coloredHTML += remainingText;
+                
+                highlightSpan.innerHTML = coloredHTML;
+                // Apply the original highlight background
+                highlightSpan.style.background = originalBackground;
+                highlightSpan.style.webkitBackground = originalWebkitBackground;
                 
                 index++;
                 setTimeout(typeHighlight, typingSpeed);
             } else {
-                // Restore original highlight class
+                // Keep the fully colored version for 2 seconds, then restore
                 setTimeout(() => {
-                    newHighlightSpan.innerHTML = 'Fachrizal Rifahdi';
+                    highlightSpan.innerHTML = nameText;
+                    highlightSpan.style.background = originalBackground;
+                    highlightSpan.style.webkitBackground = originalWebkitBackground;
                 }, 2000);
             }
         }

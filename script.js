@@ -286,42 +286,51 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Enhanced typing effect with multiple colors
+    // Enhanced typing effect with multiple colors - preserve highlight
     const heroTitle = document.querySelector('.hero-title');
     if (heroTitle) {
-        const originalText = heroTitle.innerHTML;
+        const highlightSpan = heroTitle.querySelector('.highlight');
+        const textBefore = "Hi, I'm ";
+        const textAfter = "";
+        
         heroTitle.innerHTML = '';
+        heroTitle.appendChild(document.createTextNode(textBefore));
+        
+        const newHighlightSpan = document.createElement('span');
+        newHighlightSpan.className = 'highlight';
+        newHighlightSpan.textContent = 'Fachrizal Rifahdi';
+        heroTitle.appendChild(newHighlightSpan);
         
         let index = 0;
         const typingSpeed = 100;
         const colors = ['#00d4ff', '#ff00ff', '#00ff88', '#00d4ff'];
-        let colorIndex = 0;
         
-        function typeWriter() {
-            if (index < originalText.length) {
-                const char = originalText[index];
-                if (char === ' ') {
-                    heroTitle.innerHTML += char;
-                } else {
-                    const span = document.createElement('span');
-                    span.textContent = char;
-                    span.style.color = colors[colorIndex % colors.length];
-                    span.style.animation = 'glow 2s ease-in-out infinite';
-                    heroTitle.appendChild(span);
-                    colorIndex++;
+        function typeHighlight() {
+            if (index < 'Fachrizal Rifahdi'.length) {
+                const char = 'Fachrizal Rifahdi'[index];
+                const span = document.createElement('span');
+                span.textContent = char;
+                span.style.color = colors[index % colors.length];
+                span.style.animation = 'glow 2s ease-in-out infinite';
+                span.style.fontWeight = 'inherit';
+                
+                if (index === 0) {
+                    newHighlightSpan.innerHTML = '';
                 }
+                newHighlightSpan.appendChild(span);
+                
                 index++;
-                setTimeout(typeWriter, typingSpeed);
+                setTimeout(typeHighlight, typingSpeed);
             } else {
-                // Restore original gradient animation
+                // Restore original highlight class
                 setTimeout(() => {
-                    heroTitle.innerHTML = originalText;
+                    newHighlightSpan.innerHTML = 'Fachrizal Rifahdi';
                 }, 2000);
             }
         }
         
         // Start typing effect after page load
-        setTimeout(typeWriter, 500);
+        setTimeout(typeHighlight, 500);
     }
 
     // Enhanced parallax effect with multiple layers

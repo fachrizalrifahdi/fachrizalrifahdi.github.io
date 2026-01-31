@@ -47,14 +47,43 @@ document.addEventListener('DOMContentLoaded', function() {
     const musicPlayer = document.getElementById('music-player');
 
     function playAudio() {
+        console.log('🎵 Attempting to play audio...');
         musicPlayer.volume = 0.3;
+        musicPlayer.muted = false;
+        
+        // Check if audio file loads
+        musicPlayer.addEventListener('loadeddata', function() {
+            console.log('✅ Audio file loaded successfully');
+        }, { once: true });
+        
+        musicPlayer.addEventListener('error', function(e) {
+            console.log('❌ Audio error:', e);
+        });
+        
         musicPlayer.play().then(() => {
+            console.log('✅ Audio playing successfully!');
             musicToggle.innerHTML = '<i class="fas fa-pause"></i>';
             musicToggle.classList.add('playing');
             musicPlaying = true;
             musicStarted = true;
         }).catch(err => {
             console.log('❌ Audio play failed:', err.message);
+            
+            // Try muted play then unmute after 1 second
+            musicPlayer.muted = true;
+            musicPlayer.play().then(() => {
+                console.log('✅ Audio muted play successful, will unmute in 1s');
+                setTimeout(() => {
+                    musicPlayer.muted = false;
+                    console.log('🔊 Audio unmuted');
+                }, 1000);
+                musicToggle.innerHTML = '<i class="fas fa-pause"></i>';
+                musicToggle.classList.add('playing');
+                musicPlaying = true;
+                musicStarted = true;
+            }).catch(err2 => {
+                console.log('❌ Even muted play failed:', err2.message);
+            });
         });
     }
 
@@ -88,6 +117,15 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Test audio button
+    const testAudioBtn = document.getElementById('testAudio');
+    if (testAudioBtn) {
+        testAudioBtn.addEventListener('click', function() {
+            console.log('🧪 Test audio button clicked');
+            playAudio();
+        });
+    }
+
     // Initialize autoplay on page load
     if (musicToggle && musicPlayer) {
         musicToggle.addEventListener('click', toggleMusic);
@@ -108,9 +146,18 @@ document.addEventListener('DOMContentLoaded', function() {
         // Also try on scroll
         document.addEventListener('scroll', function startMusicOnScroll() {
             if (!musicStarted && window.scrollY > 100) {
+                console.log('📜 Scroll detected, attempting to start music...');
                 playAudio();
-                console.log('✅ Audio started via scroll');
                 document.removeEventListener('scroll', startMusicOnScroll);
+            }
+        });
+        
+        // Try on any key press
+        document.addEventListener('keydown', function startMusicOnKey() {
+            if (!musicStarted) {
+                console.log('⌨️ Key press detected, attempting to start music...');
+                playAudio();
+                document.removeEventListener('keydown', startMusicOnKey);
             }
         });
     }

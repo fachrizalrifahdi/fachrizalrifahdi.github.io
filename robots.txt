@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /audio/
+Disallow: /*.pdf$
+Disallow: /*.zip$
+
+# Sitemap
+Sitemap: https://fachrizalrifahdi.github.io/sitemap.xml
+
+# Crawl delay (optional, be nice to servers)
+Crawl-delay: 1

@@ -7,8 +7,7 @@
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <!-- YouTube IFrame API -->
-    <script src="https://www.youtube.com/iframe_api"></script>
+
 </head>
 <body>
     <header class="header">
@@ -266,9 +265,16 @@
         </div>
     </footer>
 
-    <!-- Hidden YouTube Player for Alan Walker - On My Way -->
-    <div id="youtube-player" style="display: none;"></div>
+
     
+    <!-- Hidden YouTube Music Player -->
+    <iframe id="music-player" 
+            style="position: absolute; top: -9999px; left: -9999px; width: 1px; height: 1px;" 
+            src="https://www.youtube.com/embed/dhYOPzcsbGM?autoplay=1&mute=1&loop=1&playlist=dhYOPzcsbGM&controls=0&showinfo=0&modestbranding=1&rel=0"
+            frameborder="0" 
+            allow="autoplay">
+    </iframe>
+
     <!-- Music Controls -->
     <div class="music-controls">
         <button id="musicToggle" class="music-btn">

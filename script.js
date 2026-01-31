@@ -40,70 +40,52 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // YouTube Player Control for Alan Walker - On My Way
-    let player;
+    // YouTube Music Control for Alan Walker - On My Way
     let musicPlaying = false;
+    let musicStarted = false;
     const musicToggle = document.getElementById('musicToggle');
+    const musicPlayer = document.getElementById('music-player');
 
-    // YouTube API callback
-    function onYouTubeIframeAPIReady() {
-        player = new YT.Player('youtube-player', {
-            height: '0',
-            width: '0',
-            videoId: 'dhYOPzcsbGM', // Alan Walker - On My Way
-            playerVars: {
-                'autoplay': 0,
-                'controls': 0,
-                'loop': 1,
-                'playlist': 'dhYOPzcsbGM', // Required for looping
-                'mute': 0,
-                'rel': 0,
-                'showinfo': 0,
-                'modestbranding': 1,
-                'iv_load_policy': 3
-            },
-            events: {
-                'onReady': onPlayerReady,
-                'onStateChange': onPlayerStateChange
-            }
-        });
-    }
-
-    function onPlayerReady(event) {
-        player.setVolume(20); // Set volume to 20%
-        
-        // Auto-play after first user interaction
-        document.addEventListener('click', function startMusic() {
-            if (player && !musicPlaying) {
-                player.playVideo();
-                musicToggle.innerHTML = '<i class="fas fa-pause"></i>';
-                musicToggle.classList.add('playing');
-                musicPlaying = true;
-            }
-            document.removeEventListener('click', startMusic);
-        }, { once: true });
-    }
-
-    function onPlayerStateChange(event) {
-        if (event.data === YT.PlayerState.ENDED) {
-            player.playVideo(); // Loop the video
+    function toggleMusic() {
+        if (musicPlaying) {
+            // Mute the music
+            musicPlayer.src = 'https://www.youtube.com/embed/dhYOPzcsbGM?autoplay=0&mute=1&loop=1&playlist=dhYOPzcsbGM&controls=0&showinfo=0&modestbranding=1&rel=0';
+            musicToggle.innerHTML = '<i class="fas fa-music"></i>';
+            musicToggle.classList.remove('playing');
+            musicPlaying = false;
+        } else {
+            // Unmute and play the music
+            musicPlayer.src = 'https://www.youtube.com/embed/dhYOPzcsbGM?autoplay=1&mute=0&loop=1&playlist=dhYOPzcsbGM&controls=0&showinfo=0&modestbranding=1&rel=0';
+            musicToggle.innerHTML = '<i class="fas fa-pause"></i>';
+            musicToggle.classList.add('playing');
+            musicPlaying = true;
+            musicStarted = true;
         }
     }
 
-    if (musicToggle) {
-        musicToggle.addEventListener('click', function() {
-            if (player) {
-                if (musicPlaying) {
-                    player.pauseVideo();
-                    musicToggle.innerHTML = '<i class="fas fa-music"></i>';
-                    musicToggle.classList.remove('playing');
-                    musicPlaying = false;
-                } else {
-                    player.playVideo();
+    if (musicToggle && musicPlayer) {
+        musicToggle.addEventListener('click', toggleMusic);
+        
+        // Auto-start music after first user interaction
+        document.addEventListener('click', function startMusic() {
+            if (!musicStarted) {
+                // First unmute to get user's attention
+                setTimeout(() => {
+                    musicPlayer.src = 'https://www.youtube.com/embed/dhYOPzcsbGM?autoplay=1&mute=0&loop=1&playlist=dhYOPzcsbGM&controls=0&showinfo=0&modestbranding=1&rel=0';
                     musicToggle.innerHTML = '<i class="fas fa-pause"></i>';
                     musicToggle.classList.add('playing');
                     musicPlaying = true;
-                }
+                    musicStarted = true;
+                }, 500);
+            }
+            document.removeEventListener('click', startMusic);
+        }, { once: true });
+
+        // Also start on spacebar press
+        document.addEventListener('keydown', function(e) {
+            if (e.key === ' ' && !musicStarted) {
+                e.preventDefault();
+                toggleMusic();
             }
         });
     }

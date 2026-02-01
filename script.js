@@ -286,11 +286,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Enhanced typing effect with multiple colors
+    // Enhanced typing effect for name only
     const heroTitle = document.querySelector('.hero-title');
-    if (heroTitle) {
-        const originalText = heroTitle.innerHTML;
-        heroTitle.innerHTML = '';
+    const highlightSpan = document.querySelector('.hero-title .highlight');
+    if (heroTitle && highlightSpan) {
+        const originalName = highlightSpan.textContent;
+        highlightSpan.textContent = '';
         
         let index = 0;
         const typingSpeed = 100;
@@ -298,24 +299,20 @@ document.addEventListener('DOMContentLoaded', function() {
         let colorIndex = 0;
         
         function typeWriter() {
-            if (index < originalText.length) {
-                const char = originalText[index];
-                if (char === ' ') {
-                    heroTitle.innerHTML += char;
-                } else {
-                    const span = document.createElement('span');
-                    span.textContent = char;
-                    span.style.color = colors[colorIndex % colors.length];
-                    span.style.animation = 'glow 2s ease-in-out infinite';
-                    heroTitle.appendChild(span);
-                    colorIndex++;
-                }
+            if (index < originalName.length) {
+                const char = originalName[index];
+                const span = document.createElement('span');
+                span.textContent = char;
+                span.style.color = colors[colorIndex % colors.length];
+                span.style.animation = 'glow 2s ease-in-out infinite';
+                highlightSpan.appendChild(span);
+                colorIndex++;
                 index++;
                 setTimeout(typeWriter, typingSpeed);
             } else {
-                // Restore original gradient animation
+                // Restore original text after typing completes
                 setTimeout(() => {
-                    heroTitle.innerHTML = originalText;
+                    highlightSpan.textContent = originalName;
                 }, 2000);
             }
         }

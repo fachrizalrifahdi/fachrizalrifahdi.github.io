@@ -286,50 +286,39 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Fixed typing effect for name only - no delay issues
+    // Proper typing effect for name only
     const heroTitle = document.querySelector('.hero-title');
     const highlightSpan = document.querySelector('.hero-title .highlight');
     if (heroTitle && highlightSpan) {
         const originalName = highlightSpan.textContent;
         
-        // Show the highlight immediately to avoid delay
-        highlightSpan.style.visibility = 'hidden';
-        highlightSpan.textContent = originalName;
-        
-        // Create typing container
-        const typingContainer = document.createElement('span');
-        typingContainer.style.display = 'inline-block';
-        highlightSpan.parentNode.insertBefore(typingContainer, highlightSpan.nextSibling);
+        // Clear the highlight and create typing container
+        highlightSpan.textContent = '';
+        highlightSpan.style.opacity = '1';
         
         let index = 0;
-        const typingSpeed = 80;
+        const typingSpeed = 120;
         const colors = ['#00d4ff', '#ff00ff', '#00ff88', '#00d4ff'];
         let colorIndex = 0;
         
         function typeWriter() {
             if (index < originalName.length) {
                 const char = originalName[index];
-                const span = document.createElement('span');
-                span.textContent = char;
-                span.style.color = colors[colorIndex % colors.length];
-                span.style.animation = 'glow 2s ease-in-out infinite';
-                span.style.display = 'inline-block';
-                typingContainer.appendChild(span);
-                colorIndex++;
+                highlightSpan.innerHTML += char;
                 index++;
                 setTimeout(typeWriter, typingSpeed);
             } else {
-                // Show original highlight after typing completes
+                // Add highlight class back after typing
                 setTimeout(() => {
-                    typingContainer.remove();
-                    highlightSpan.style.visibility = 'visible';
-                    highlightSpan.textContent = originalName;
-                }, 1500);
+                    highlightSpan.style.background = 'linear-gradient(135deg, rgba(0, 212, 255, 0.3), rgba(255, 0, 255, 0.3))';
+                    highlightSpan.style.padding = '0 10px';
+                    highlightSpan.style.borderRadius = '5px';
+                }, 500);
             }
         }
         
-        // Start typing effect immediately
-        setTimeout(typeWriter, 300);
+        // Start typing effect after a short delay
+        setTimeout(typeWriter, 800);
     }
 
     // Enhanced parallax effect with multiple layers

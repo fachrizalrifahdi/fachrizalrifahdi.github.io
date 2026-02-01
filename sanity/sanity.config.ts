@@ -6,6 +6,7 @@ import { schemaTypes } from './schemas'
 export default defineConfig({
   projectId: 'illlgd5e',
   dataset: 'production',
+  organization: 'oiPTHJGQf',
   plugins: [
     structureTool({
       structure: (S) => S.list().title('Content').items([

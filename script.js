@@ -286,39 +286,50 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Proper typing effect for name only
+    // True typing effect for name only
     const heroTitle = document.querySelector('.hero-title');
     const highlightSpan = document.querySelector('.hero-title .highlight');
     if (heroTitle && highlightSpan) {
         const originalName = highlightSpan.textContent;
         
-        // Clear the highlight and create typing container
-        highlightSpan.textContent = '';
-        highlightSpan.style.opacity = '1';
+        // Clear the span completely
+        highlightSpan.innerHTML = '';
+        highlightSpan.style.visibility = 'visible';
         
         let index = 0;
-        const typingSpeed = 120;
-        const colors = ['#00d4ff', '#ff00ff', '#00ff88', '#00d4ff'];
-        let colorIndex = 0;
+        const typingSpeed = 150;
         
         function typeWriter() {
-            if (index < originalName.length) {
-                const char = originalName[index];
-                highlightSpan.innerHTML += char;
+            if (index <= originalName.length) {
+                // Show only the typed portion
+                const typedText = originalName.substring(0, index);
+                highlightSpan.textContent = typedText;
+                
+                // Add cursor effect
+                if (index < originalName.length) {
+                    highlightSpan.innerHTML += '<span style="animation: blink 1s infinite;">|</span>';
+                }
+                
                 index++;
                 setTimeout(typeWriter, typingSpeed);
             } else {
-                // Add highlight class back after typing
-                setTimeout(() => {
-                    highlightSpan.style.background = 'linear-gradient(135deg, rgba(0, 212, 255, 0.3), rgba(255, 0, 255, 0.3))';
-                    highlightSpan.style.padding = '0 10px';
-                    highlightSpan.style.borderRadius = '5px';
-                }, 500);
+                // Remove cursor when done
+                highlightSpan.textContent = originalName;
             }
         }
         
-        // Start typing effect after a short delay
-        setTimeout(typeWriter, 800);
+        // Start typing effect after page load
+        setTimeout(typeWriter, 1000);
+        
+        // Add cursor blink animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes blink {
+                0%, 50% { opacity: 1; }
+                51%, 100% { opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
     }
 
     // Enhanced parallax effect with multiple layers

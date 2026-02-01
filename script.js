@@ -286,15 +286,23 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Enhanced typing effect for name only
+    // Fixed typing effect for name only - no delay issues
     const heroTitle = document.querySelector('.hero-title');
     const highlightSpan = document.querySelector('.hero-title .highlight');
     if (heroTitle && highlightSpan) {
         const originalName = highlightSpan.textContent;
-        highlightSpan.textContent = '';
+        
+        // Show the highlight immediately to avoid delay
+        highlightSpan.style.visibility = 'hidden';
+        highlightSpan.textContent = originalName;
+        
+        // Create typing container
+        const typingContainer = document.createElement('span');
+        typingContainer.style.display = 'inline-block';
+        highlightSpan.parentNode.insertBefore(typingContainer, highlightSpan.nextSibling);
         
         let index = 0;
-        const typingSpeed = 100;
+        const typingSpeed = 80;
         const colors = ['#00d4ff', '#ff00ff', '#00ff88', '#00d4ff'];
         let colorIndex = 0;
         
@@ -305,20 +313,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 span.textContent = char;
                 span.style.color = colors[colorIndex % colors.length];
                 span.style.animation = 'glow 2s ease-in-out infinite';
-                highlightSpan.appendChild(span);
+                span.style.display = 'inline-block';
+                typingContainer.appendChild(span);
                 colorIndex++;
                 index++;
                 setTimeout(typeWriter, typingSpeed);
             } else {
-                // Restore original text after typing completes
+                // Show original highlight after typing completes
                 setTimeout(() => {
+                    typingContainer.remove();
+                    highlightSpan.style.visibility = 'visible';
                     highlightSpan.textContent = originalName;
-                }, 2000);
+                }, 1500);
             }
         }
         
-        // Start typing effect after page load
-        setTimeout(typeWriter, 500);
+        // Start typing effect immediately
+        setTimeout(typeWriter, 300);
     }
 
     // Enhanced parallax effect with multiple layers

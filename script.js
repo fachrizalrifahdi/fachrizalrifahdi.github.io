@@ -1,3 +1,6 @@
+// Import Sanity client functions
+import { getProjects, getFeaturedProjects } from './sanity-client.js'
+
 document.addEventListener('DOMContentLoaded', function() {
     // Mobile Navigation Toggle
     const hamburger = document.querySelector('.hamburger');
@@ -543,4 +546,89 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     `;
     document.head.appendChild(trailStyle);
+
+    // Load projects from Sanity CMS
+    async function loadProjects() {
+        try {
+            const projects = await getProjects();
+            const projectsGrid = document.getElementById('projects-grid');
+            
+            if (!projectsGrid) return;
+            
+            projectsGrid.innerHTML = '';
+            
+            if (projects.length === 0) {
+                projectsGrid.innerHTML = `
+                    <div class="no-projects">
+                        <p>No projects available yet. Check back soon!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            projects.forEach(project => {
+                const projectCard = createProjectCard(project);
+                projectsGrid.appendChild(projectCard);
+            });
+            
+            // Re-observe new project cards for animations
+            const newProjectCards = projectsGrid.querySelectorAll('.project-card');
+            newProjectCards.forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(50px) scale(0.95)';
+                card.style.transition = 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
+                observer.observe(card);
+            });
+            
+        } catch (error) {
+            console.error('Error loading projects:', error);
+            const projectsGrid = document.getElementById('projects-grid');
+            if (projectsGrid) {
+                projectsGrid.innerHTML = `
+                    <div class="error-message">
+                        <p>Unable to load projects. Please try again later.</p>
+                    </div>
+                `;
+            }
+        }
+    }
+    
+    // Create project card element
+    function createProjectCard(project) {
+        const card = document.createElement('div');
+        card.className = 'project-card';
+        
+        const imageUrl = project.imageUrl ? 
+            `<img src="${project.imageUrl}" alt="${project.title}" class="project-image">` :
+            `<div class="project-placeholder">
+                <i class="fas fa-code"></i>
+            </div>`;
+        
+        const technologiesHtml = project.technologies ? 
+            project.technologies.map(tech => `<span class="tech-tag">${tech}</span>`).join('') : '';
+        
+        card.innerHTML = `
+            <div class="project-image-container">
+                ${imageUrl}
+                <div class="project-overlay">
+                    <div class="project-links">
+                        ${project.liveUrl ? `<a href="${project.liveUrl}" target="_blank" class="project-link"><i class="fas fa-external-link-alt"></i> Live Demo</a>` : ''}
+                        ${project.githubUrl ? `<a href="${project.githubUrl}" target="_blank" class="project-link"><i class="fas fa-code-branch"></i> GitHub</a>` : ''}
+                    </div>
+                </div>
+            </div>
+            <div class="project-content">
+                <h3 class="project-title">${project.title}</h3>
+                <p class="project-description">${project.description}</p>
+                <div class="project-technologies">
+                    ${technologiesHtml}
+                </div>
+            </div>
+        `;
+        
+        return card;
+    }
+    
+    // Initialize projects when DOM is ready
+    loadProjects();
 });

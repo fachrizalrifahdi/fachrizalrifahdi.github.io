@@ -5,9 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Page Not Found | Fachrizal Rifahdi</title>
     <script>
-        // Handle client-side routing for GitHub Pages
-        sessionStorage.redirect = sessionStorage.redirect || location.href;
-        window.location.replace('/' + (sessionStorage.getItem('redirect') || ''));
+        // Get the requested path
+        var path = location.pathname;
+        
+        // If it's the studio route, redirect to studio index
+        if (path.startsWith('/studio')) {
+            window.location.replace('/studio/');
+        } else {
+            // For other 404s, redirect to home
+            window.location.replace('/');
+        }
     </script>
 </head>
 <body>

@@ -117,14 +117,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Test audio button
-    const testAudioBtn = document.getElementById('testAudio');
-    if (testAudioBtn) {
-        testAudioBtn.addEventListener('click', function() {
-            console.log('🧪 Test audio button clicked');
-            playAudio();
-        });
-    }
+
 
     // Initialize autoplay on page load
     if (musicToggle && musicPlayer) {

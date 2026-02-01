@@ -1,4 +1,173 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Interactive Particle System for Hero
+    function initParticles() {
+        const canvas = document.getElementById('particles-canvas');
+        if (!canvas) return;
+        
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let mouseX = 0;
+        let mouseY = 0;
+        let animationId;
+        
+        // Set canvas size
+        function resizeCanvas() {
+            const hero = document.querySelector('.hero');
+            if (hero) {
+                canvas.width = hero.offsetWidth;
+                canvas.height = hero.offsetHeight;
+            }
+        }
+        
+        // Particle class
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedX = Math.random() * 0.5 - 0.25;
+                this.speedY = Math.random() * 0.5 - 0.25;
+                this.opacity = Math.random() * 0.8 + 0.2;
+                this.pulseSpeed = Math.random() * 0.02 + 0.01;
+                this.pulsePhase = Math.random() * Math.PI * 2;
+                this.color = this.getRandomColor();
+            }
+            
+            getRandomColor() {
+                const colors = [
+                    'rgba(255, 255, 255, ',
+                    'rgba(0, 212, 255, ',
+                    'rgba(255, 0, 255, ',
+                    'rgba(0, 255, 136, '
+                ];
+                return colors[Math.floor(Math.random() * colors.length)];
+            }
+            
+            update() {
+                // Movement
+                this.x += this.speedX;
+                this.y += this.speedY;
+                
+                // Wrap around edges
+                if (this.x < 0) this.x = canvas.width;
+                if (this.x > canvas.width) this.x = 0;
+                if (this.y < 0) this.y = canvas.height;
+                if (this.y > canvas.height) this.y = 0;
+                
+                // Pulsing effect
+                this.pulsePhase += this.pulseSpeed;
+                const pulseFactor = Math.sin(this.pulsePhase) * 0.3 + 1;
+                this.currentSize = this.size * pulseFactor;
+                
+                // Mouse interaction - repel particles
+                const dx = this.x - mouseX;
+                const dy = this.y - mouseY;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < 100) {
+                    const force = (100 - distance) / 100;
+                    this.x += dx * force * 0.1;
+                    this.y += dy * force * 0.1;
+                }
+                
+                // Update opacity based on pulse
+                this.currentOpacity = this.opacity * (0.7 + Math.sin(this.pulsePhase) * 0.3);
+            }
+            
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.currentSize, 0, Math.PI * 2);
+                ctx.fillStyle = this.color + this.currentOpacity + ')';
+                ctx.fill();
+                
+                // Add glow effect for larger particles
+                if (this.currentSize > 1.5) {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.currentSize * 2, 0, Math.PI * 2);
+                    ctx.fillStyle = this.color + (this.currentOpacity * 0.2) + ')';
+                    ctx.fill();
+                }
+            }
+        }
+        
+        // Create particles
+        function createParticles() {
+            particles = [];
+            const particleCount = Math.floor((canvas.width * canvas.height) / 8000);
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+        }
+        
+        // Connect nearby particles
+        function connectParticles() {
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < 80) {
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.strokeStyle = `rgba(255, 255, 255, ${0.1 * (1 - distance / 80)})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+        
+        // Animation loop
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+            
+            connectParticles();
+            animationId = requestAnimationFrame(animate);
+        }
+        
+        // Mouse tracking
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            mouseX = e.clientX - rect.left;
+            mouseY = e.clientY - rect.top;
+        });
+        
+        // Touch support
+        canvas.addEventListener('touchmove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            mouseX = e.touches[0].clientX - rect.left;
+            mouseY = e.touches[0].clientY - rect.top;
+        });
+        
+        // Initialize
+        resizeCanvas();
+        createParticles();
+        animate();
+        
+        // Handle resize
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+            createParticles();
+        });
+        
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+            }
+        });
+    }
+    
+    // Initialize particles
+    setTimeout(initParticles, 100);
+
     // Mobile Navigation Toggle
     const hamburger = document.querySelector('.hamburger');
     const navMenu = document.querySelector('.nav-menu');

@@ -1,7 +1,7 @@
 import { defineConfig } from '@sanity/cli'
 
 export default defineConfig({
-  projectId: 'oiPTHJGQf',
+  projectId: 'illlgd5e',
   dataset: 'production',
   useCdn: true,
   api: {

@@ -300,20 +300,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const typingSpeed = 150;
         
         function typeWriter() {
-            if (index <= originalName.length) {
-                // Show only the typed portion
-                const typedText = originalName.substring(0, index);
-                highlightSpan.textContent = typedText;
-                
-                // Add cursor effect
-                if (index < originalName.length) {
-                    highlightSpan.innerHTML += '<span style="animation: blink 1s infinite;">|</span>';
-                }
-                
+            if (index < originalName.length) {
+                // Add one character at a time
+                highlightSpan.textContent += originalName[index];
                 index++;
                 setTimeout(typeWriter, typingSpeed);
             } else {
-                // Remove cursor when done
+                // Ensure final text is set correctly
                 highlightSpan.textContent = originalName;
             }
         }

@@ -543,4 +543,45 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     `;
     document.head.appendChild(trailStyle);
+
+    // Create shooting stars effect
+    function createShootingStar() {
+        const shootingStar = document.createElement('div');
+        shootingStar.className = 'shooting-star';
+        
+        // Random starting position from top or left
+        const startFromTop = Math.random() > 0.5;
+        if (startFromTop) {
+            shootingStar.style.top = Math.random() * 50 + '%';
+            shootingStar.style.left = '-100px';
+        } else {
+            shootingStar.style.top = '-100px';
+            shootingStar.style.left = Math.random() * 50 + '%';
+        }
+        
+        document.body.appendChild(shootingStar);
+        
+        // Remove after animation
+        setTimeout(() => {
+            if (document.body.contains(shootingStar)) {
+                document.body.removeChild(shootingStar);
+            }
+        }, 3000);
+    }
+    
+    // Create shooting stars periodically
+    setInterval(() => {
+        if (Math.random() > 0.7) {
+            createShootingStar();
+        }
+    }, 4000);
+    
+    // Create initial shooting stars
+    setTimeout(() => {
+        createShootingStar();
+    }, 2000);
+    
+    setTimeout(() => {
+        createShootingStar();
+    }, 8000);
 });
